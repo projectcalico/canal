@@ -1,6 +1,6 @@
 ![Canal Logo](logos/canal-logo-type-full-color.png)
 
-# -> Policy based networking for cloud native applications <- #
+# Policy based networking for cloud native applications #
 
 Canal brings together Calico network policy with flannel networking.
 
