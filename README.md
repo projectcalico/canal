@@ -29,6 +29,7 @@ Watch this space for news of further integration and install instructions coming
 
 ## Roadmap
 - [x] Automated and manual install instructions for CoreOS based Kubernetes clusters
+- [ ] Step-by-step guide for users creating their own install solutions
 - [ ] Kubernetes self-hosted installation support (installing Calico & flannel in a single Kubernetes pod, run as a Daemonset)
 - [ ] Combine Calico and Flannel into single container
 - [ ] Single CNI plugin with simplified configuration
