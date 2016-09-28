@@ -16,14 +16,19 @@ Note that the Canal currently uses the Calico and flannel projects as is with no
 ### CoreOS based Kubernetes cluster
 Canal is supported today within the [coreos/coreos-kubernetes](https://github.com/coreos/coreos-kubernetes) repository, which provides step-by-step instructions plus several automated install options to bring up a Kubernetes cluster with Canal networking (Calico policy + flannel VXLAN connectivity by default).
 
-### Other automated install options
-Watch this space for news of further integration and install instructions coming soon!
+### Kubernetes self-hosted install
+[See here](k8s-install/README.md)
+
+[See here](k8s-install/kubeadm/README.md) for a version specifically for `kubeadm` clusters.
 
 ### Step-by-step guide for expert rkt users
 [See here](InstallGuide.md)
 
 ### Step-by-step guide for expert users creating their own orchestrator integrations
 [See here](OrchestratorIntegration.md)
+
+### Other automated install options
+Watch this space for news of further integration and install instructions coming soon!
 
 ## Roadmap
 - [x] Automated and manual install instructions for CoreOS based Kubernetes clusters
