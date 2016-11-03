@@ -244,6 +244,9 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  annotations:
+    kube-system scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
+    scheduler.alpha.kubernetes.io/critical-pod: ''
   name: configure-canal 
   namespace: kube-system
   labels:
@@ -288,6 +291,9 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations: 
+        kube-system scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
+        scheduler.alpha.kubernetes.io/critical-pod: ''
       name: calico-policy-controller
       namespace: kube-system
       labels:
