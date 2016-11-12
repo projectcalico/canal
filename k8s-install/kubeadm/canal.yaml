@@ -252,8 +252,9 @@ spec:
   template:
     metadata:
       name: configure-canal
-      scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
-      scheduler.alpha.kubernetes.io/critical-pod: ''
+      annotations:
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
+        scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
       hostNetwork: true
       restartPolicy: OnFailure 
