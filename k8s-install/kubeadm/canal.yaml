@@ -6,7 +6,7 @@ metadata:
   namespace: kube-system
 data:
   # Configure this with the location of your etcd cluster.
-  etcd_endpoints: "http://100.78.232.136:6666"
+  etcd_endpoints: "http://10.96.232.136:6666"
 
   # The interface used by canal for host <-> host communication.
   # If left blank, then the interface is chosing using the node's
@@ -98,7 +98,7 @@ spec:
     k8s-app: canal-etcd
   # This ClusterIP needs to be known in advance, since we cannot rely
   # on DNS to get access to etcd. 
-  clusterIP: 100.78.232.136
+  clusterIP: 10.96.232.136
   ports:
     - port: 6666
 
