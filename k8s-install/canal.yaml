@@ -1,3 +1,45 @@
+# This ConfigMap can be used to configure a self-hosted Canal installation.
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: canal-config 
+  namespace: kube-system
+data:
+  # Configure this with the location of your etcd cluster.
+  etcd_endpoints: "http://127.0.0.1:2379"
+
+  # The interface used by canal for host <-> host communication.
+  # If left blank, then the interface is chosing using the node's
+  # default route.
+  canal_iface: ""
+
+  # Whether or not to masquerade traffic to destinations not within
+  # the pod network.
+  masquerade: "true"
+
+  # The CNI network configuration to install on each node.  The special
+  # values in this config will be automatically populated.
+  cni_network_config: |-
+    {
+        "name": "canal",
+        "type": "flannel",
+        "delegate": {
+          "type": "calico",
+          "etcd_endpoints": "__ETCD_ENDPOINTS__",
+          "log_level": "info",
+          "policy": {
+              "type": "k8s",
+              "k8s_api_root": "https://__KUBERNETES_SERVICE_HOST__:__KUBERNETES_SERVICE_PORT__",
+              "k8s_api_token": "__SERVICEACCOUNT_TOKEN__"
+          },
+          "kubernetes": {
+              "kubeconfig": "/etc/cni/net.d/__KUBECONFIG_FILENAME__"
+          }
+        }
+    }
+
+---
+
 # This manifest installs the per-node agents, as well
 # as the CNI plugins and network config on 
 # each master and worker node in a Kubernetes cluster.
