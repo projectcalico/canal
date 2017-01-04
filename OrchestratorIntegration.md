@@ -47,7 +47,7 @@ For `Felix` to work, the details of each container need to be written to etcd. T
 
 Or it can be done by writing the information directly to etcd. There are libraries to help with this
 * Python - https://github.com/projectcalico/libcalico
-* Go - https://github.com/tigera/libcalico-go
+* Go - https://github.com/projectcalico/libcalico-go
 
 ### Using CNI with Flannel
 When using Flannel for networking and using Calico CNI to store the endpoints in etcd, the flannel CNI plugin should be used to wrap the Calico CNI plugin. This allows the IP range that flannel allocated to the host to be passed to the `host-local` IPAM plugin. An example of this is provided in the [coreos-kubernetes](https://github.com/coreos/coreos-kubernetes/blob/master/Documentation/deploy-master.md#set-up-the-cni-config-optional) repository.
