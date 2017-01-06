@@ -34,6 +34,7 @@ Watch this space for news of further integration and install instructions coming
 - [x] Automated and manual install instructions for CoreOS based Kubernetes clusters
 - [x] Step-by-step guide for users creating their own install solutions
 - [x] Kubernetes self-hosted installation support (installing Calico & flannel in a single Kubernetes pod, run as a Daemonset)
+- [x] Kubernetes self-hosted etcd-less installation support (Calico & flannel using k8s API server only, without direct etcd access)
 - [ ] Combine Calico and Flannel into single container
 - [ ] Single CNI plugin with simplified configuration
 - [ ] Mesos and DC/OS universe installation support
