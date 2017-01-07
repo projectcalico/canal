@@ -36,13 +36,13 @@ There are essentially three options for AWS networking: VXLAN encap, IPIP encap,
 
 ### Flannel VXLAN
 
-*This is our default recommendation for 2017 Q1.*
+*This is our default recommendation for Canal users today.*
 
 Flannel's VXLAN provides simplicity and performance both inside of an AWS VPC and across VPCs. And with the recently merged support to deploy flannel simply using [kubectl](https://github.com/coreos/flannel/issues/587) it is easy to get started as well. For users this is a reasonable default recommended by teams from both CoreOS and Tigera.
 
 **Note:** The AWS VPC will have no ability to enforce routing policy at the Pod level, only at the node level.
 
-### Calico Linux Routing Inside a AZ and IPIP Encap Cross AZ (Q2 2017)
+### Calico Linux Routing Inside a AZ and IPIP Encap Cross AZ (Q1 2017)
 
 *This will be our default recommendation once completed.*
 
