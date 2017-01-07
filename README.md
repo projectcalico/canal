@@ -50,7 +50,7 @@ Because Amazon VPCs are L2 networks Calico can use native Linux routing between 
 
 However, Amazon does L3 dest filtering between VPC AZ subnets and so for all routes outside of a VPC subnet Calico will do IPIP encapsulation. IPIP encap has advantages over VXLAN: no L2 announces to track/refresh, packets keep routing with control plane down, slightly fewer bytes for encap.
 
-Customer VPCs must be configured with the correct settings on for the intra-vpc routing to work correctly (see Calico AWS docs: âRouting Traffic Within a Single VPC Subnetâ http://docs.projectcalico.org/v2.0/reference/public-cloud/aws#routing-traffic-within-a-single-vpc-subnet).
+Customer VPCs must be configured with the correct settings on for the intra-vpc routing to work correctly (see Calico AWS docs: "Routing Traffic Within a Single VPC Subnet" http://docs.projectcalico.org/v2.0/reference/public-cloud/aws#routing-traffic-within-a-single-vpc-subnet).
 
 **Note:** The AWS VPC will have no ability to enforce routing policy at the Pod level, only at the node level.
 
