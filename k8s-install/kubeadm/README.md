@@ -8,7 +8,7 @@ To install this manifest, make sure you've created a cluster using the kubeadm t
 Then use kubectl to create the manifest in this directory:
 
 ```
-kubectl create -f canal.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/kubeadm/canal.yaml
 ```
 
 ## About
