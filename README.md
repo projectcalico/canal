@@ -1,5 +1,5 @@
 
-![Canal Logo](logos/canal-logo-type-full-color 328x184.png)
+![Canal Logo](https://github.com/projectcalico/canal/raw/master/logos/canal-logo-type-full-color%20328x184.png)
 
 # Policy based networking for cloud native applications
 
