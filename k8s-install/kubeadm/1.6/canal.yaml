@@ -60,13 +60,11 @@ spec:
     spec:
       # Only run this pod on the master.
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        kubeadm.alpha.kubernetes.io/role: master
       hostNetwork: true
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
-        - key: node-role.kubernetes.io/master
-          effect: NoSchedule
       containers:
         - name: canal-etcd
           image: gcr.io/google_containers/etcd:2.2.1
