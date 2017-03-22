@@ -55,6 +55,7 @@ spec:
     metadata:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
       labels:
         k8s-app: canal-etcd
     spec:
@@ -62,9 +63,6 @@ spec:
       nodeSelector:
         kubeadm.alpha.kubernetes.io/role: master
       hostNetwork: true
-      tolerations:
-        - key: CriticalAddonsOnly
-          operator: Exists
       containers:
         - name: canal-etcd
           image: gcr.io/google_containers/etcd:2.2.1
@@ -255,11 +253,9 @@ spec:
     metadata:
       name: configure-canal
       annotations:
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        effect: NoSchedule
       hostNetwork: true
       restartPolicy: OnFailure
       containers:
@@ -296,6 +292,7 @@ spec:
   template:
     metadata:
       annotations:
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
         scheduler.alpha.kubernetes.io/critical-pod: ''
       name: calico-policy-controller
       namespace: kube-system
@@ -305,9 +302,6 @@ spec:
       # The policy controller must run in the host network namespace so that
       # it isn't governed by policy that would prevent it from working.
       hostNetwork: true
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          effect: NoSchedule
       containers:
         - name: calico-policy-controller
           image: quay.io/calico/kube-policy-controller:v0.5.2
