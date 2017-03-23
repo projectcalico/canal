@@ -8,8 +8,8 @@ data:
   # Configure this with the location of your etcd cluster.
   etcd_endpoints: "http://10.96.232.136:6666"
 
-  # The interface used by canal for host <-> host communication.
-  # If left blank, then the interface is chosing using the node's
+  # The interface used by Canal for host <-> host communication.
+  # If left blank, then the interface is chosen using the node's
   # default route.
   canal_iface: ""
 
