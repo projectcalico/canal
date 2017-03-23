@@ -1,14 +1,22 @@
 # Install for Kubeadm
 
-This directory contains a single packaged manifest for installing Canal on kubeadm managed Kubernetes clusters.  It is a specific case of the 
+This directory contains a single packaged manifest for installing Canal on kubeadm managed Kubernetes clusters.  It is a specific case of the
 more general manifests provided [here](../README.md)
 
 To install this manifest, make sure you've created a cluster using the kubeadm tool.
 
-Then use kubectl to create the manifest in this directory:
+Then use kubectl to create the manifest in this directory depending on your Kubernetes version.
+
+For Kuberentes 1.5 and below:
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/kubeadm/canal.yaml
+```
+
+For Kubernetes 1.6:
+
+```
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/kubeadm/1.6/canal.yaml
 ```
 
 ## About

@@ -2,7 +2,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: canal-config 
+  name: canal-config
   namespace: kube-system
 data:
   # Configure this with the location of your etcd cluster.
@@ -42,9 +42,9 @@ data:
 
 # This manifest installs the Canal etcd on the kubeadm master.  This uses a DaemonSet
 # to force it to run on the master even when the master isn't schedulable, and uses
-# nodeSelector to ensure it only runs on the master. 
-apiVersion: extensions/v1beta1 
-kind: DaemonSet 
+# nodeSelector to ensure it only runs on the master.
+apiVersion: extensions/v1beta1
+kind: DaemonSet
 metadata:
   name: canal-etcd
   namespace: kube-system
@@ -55,19 +55,23 @@ spec:
     metadata:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
-        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
       labels:
         k8s-app: canal-etcd
     spec:
       # Only run this pod on the master.
       nodeSelector:
-        kubeadm.alpha.kubernetes.io/role: master
+        node-role.kubernetes.io/master: ""
       hostNetwork: true
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
         - name: canal-etcd
-          image: gcr.io/google_containers/etcd:2.2.1
+          image: quay.io/coreos/etcd:v3.1.4
           env:
-            - name: ETCD_IP 
+            - name: ETCD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
@@ -97,17 +101,15 @@ spec:
   selector:
     k8s-app: canal-etcd
   # This ClusterIP needs to be known in advance, since we cannot rely
-  # on DNS to get access to etcd. 
+  # on DNS to get access to etcd.
   clusterIP: 10.96.232.136
   ports:
     - port: 6666
 
 ---
 
-
-
 # This manifest installs the per-node agents, as well
-# as the CNI plugins and network config on 
+# as the CNI plugins and network config on
 # each master and worker node in a Kubernetes cluster.
 kind: DaemonSet
 apiVersion: extensions/v1beta1
@@ -126,6 +128,10 @@ spec:
         k8s-app: canal-node
     spec:
       hostNetwork: true
+      serviceAccountName: calico-cni-plugin
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
       containers:
         # Runs the flannel daemon to enable vxlan networking between
         # container hosts.
@@ -138,18 +144,18 @@ spec:
                 configMapKeyRef:
                   name: canal-config
                   key: etcd_endpoints
-            # The interface flannel should run on. 
+            # The interface flannel should run on.
             - name: FLANNELD_IFACE
               valueFrom:
                 configMapKeyRef:
                   name: canal-config
-                  key: canal_iface 
+                  key: canal_iface
             # Perform masquerade on traffic leaving the pod cidr.
             - name: FLANNELD_IP_MASQ
               valueFrom:
                 configMapKeyRef:
                   name: canal-config
-                  key: masquerade 
+                  key: masquerade
             # Write the subnet.env file to the mounted directory.
             - name: FLANNELD_SUBNET_FILE
               value: "/run/flannel/subnet.env"
@@ -160,11 +166,11 @@ spec:
               name: resolv
             - mountPath: /run/flannel
               name: run-flannel
-        # Runs calico/node container on each Kubernetes node.  This 
+        # Runs calico/node container on each Kubernetes node.  This
         # container programs network policy and local routes on each
         # host.
         - name: calico-node
-          image: quay.io/calico/node:v1.0.1
+          image: quay.io/calico/node:v1.1.0
           env:
             # The location of the etcd cluster.
             - name: ETCD_ENDPOINTS
@@ -172,12 +178,15 @@ spec:
                 configMapKeyRef:
                   name: canal-config
                   key: etcd_endpoints
-            # Disable Calico BGP.  Calico is simply enforcing policy. 
+            # Disable Calico BGP.  Calico is simply enforcing policy.
             - name: CALICO_NETWORKING
               value: "false"
             # Disable file logging so `kubectl logs` works.
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
+            # All pods to speak to services that resolve to the same host.
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: "ACCEPT"
           securityContext:
             privileged: true
           volumeMounts:
@@ -190,13 +199,13 @@ spec:
         # This container installs the Calico CNI binaries
         # and CNI network config file on each node.
         - name: install-calico-cni
-          image: quay.io/calico/cni:v1.5.5
+          image: quay.io/calico/cni:v1.6.2
           imagePullPolicy: Always
           command: ["/install-cni.sh"]
           env:
             # The name of the CNI network config file to install.
             - name: CNI_CONF_NAME
-              value: "10-canal.conf" 
+              value: "10-canal.conf"
             # The location of the etcd cluster.
             - name: ETCD_ENDPOINTS
               valueFrom:
@@ -239,37 +248,40 @@ spec:
 
 ---
 
-# This manifest deploys a Job which performs one time 
-# configuration of Canal. 
+# This manifest deploys a Job which performs one time
+# configuration of Canal.
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configure-canal 
+  name: configure-canal
   namespace: kube-system
   labels:
-    k8s-app: canal 
+    k8s-app: canal
 spec:
   template:
     metadata:
       name: configure-canal
       annotations:
-        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
       hostNetwork: true
-      restartPolicy: OnFailure 
+      restartPolicy: OnFailure
       containers:
-        # Writes basic flannel configuration to etcd. 
+        # Writes basic flannel configuration to etcd.
         - name: configure-flannel
-          image: quay.io/coreos/etcd:v3.0.9 
-          command: 
+          image: quay.io/coreos/etcd:v3.1.4
+          command:
           - "etcdctl"
+          - "--no-sync"
           - "set"
           - "/coreos.com/network/config"
           - '{ "Network": "192.168.0.0/16", "Backend": {"Type": "vxlan"} }'
           env:
             # The location of the etcd cluster.
-            - name: ETCDCTL_PEERS 
+            - name: ETCDCTL_PEERS
               valueFrom:
                 configMapKeyRef:
                   name: canal-config
@@ -291,8 +303,7 @@ spec:
   replicas: 1
   template:
     metadata:
-      annotations: 
-        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
+      annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
       name: calico-policy-controller
       namespace: kube-system
@@ -302,9 +313,13 @@ spec:
       # The policy controller must run in the host network namespace so that
       # it isn't governed by policy that would prevent it from working.
       hostNetwork: true
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      serviceAccountName: calico-policy-controller
       containers:
         - name: calico-policy-controller
-          image: quay.io/calico/kube-policy-controller:v0.5.2
+          image: quay.io/calico/kube-policy-controller:v0.5.4
           env:
             # The location of the Calico etcd cluster.
             - name: ETCD_ENDPOINTS
@@ -316,8 +331,88 @@ spec:
             # service for API access.
             - name: K8S_API
               value: "https://kubernetes.default:443"
-            # Since we're running in the host namespace and might not have KubeDNS 
+            # Since we're running in the host namespace and might not have KubeDNS
             # access, configure the container's /etc/hosts to resolve
             # kubernetes.default to the correct service clusterIP.
             - name: CONFIGURE_ETC_HOSTS
               value: "true"
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: calico-cni-plugin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calico-cni-plugin
+subjects:
+- kind: ServiceAccount
+  name: calico-cni-plugin
+  namespace: kube-system
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: calico-cni-plugin
+  namespace: kube-system
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - nodes
+    verbs:
+      - get
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calico-cni-plugin
+  namespace: kube-system
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: calico-policy-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calico-policy-controller
+subjects:
+- kind: ServiceAccount
+  name: calico-policy-controller
+  namespace: kube-system
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: calico-policy-controller
+  namespace: kube-system
+rules:
+  - apiGroups:
+    - ""
+    - extensions
+    resources:
+      - pods
+      - namespaces
+      - networkpolicies
+    verbs:
+      - watch
+      - list
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calico-policy-controller
+  namespace: kube-system
