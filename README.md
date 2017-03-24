@@ -7,7 +7,7 @@ Canal is a community-driven initiative that aims to allow users to easily deploy
 
 Canal represents the best-of-breed policy-based networking solution for cloud native applications, supporting any orchestrator that support the CNI network plugin API (including Kubernetes, Mesos, and others).
 
-![Canal Diagram](./Canal Phase 1 Diagram.png)
+![Canal Diagram](https://github.com/projectcalico/canal/raw/master/Canal%20Phase%201%20Diagram.png)
 
 Note that the Canal currently uses the Calico and flannel projects as is with no code modifications to either. Canal today is simply a deployment pattern for installing and configuring the projects to work together seamlessly as single network solution from the point of view of the user and orchestration system. In the future the Canal project will likely contribute code changes to Calico and flannel projects to further simplify install and configuration.
 
