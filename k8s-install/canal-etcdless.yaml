@@ -4,7 +4,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: canal-config 
+  name: canal-config
   namespace: kube-system
 data:
   # The interface used by canal for host <-> host communication.
@@ -50,7 +50,7 @@ data:
 ---
 
 # This manifest installs the calico/node container, as well
-# as the Calico CNI plugins and network config on 
+# as the Calico CNI plugins and network config on
 # each master and worker node in a Kubernetes cluster.
 kind: DaemonSet
 apiVersion: extensions/v1beta1
@@ -75,7 +75,7 @@ spec:
     spec:
       hostNetwork: true
       containers:
-        # Runs calico/node container on each Kubernetes node.  This 
+        # Runs calico/node container on each Kubernetes node.  This
         # container programs network policy and routes on each
         # host.
         - name: calico-node
@@ -85,17 +85,20 @@ spec:
             - name: DATASTORE_TYPE
               value: "kubernetes"
             # Enable felix logging.
-            - name: FELIX_LOGSEVERITYSYS 
+            - name: FELIX_LOGSEVERITYSYS
               value: "info"
-            # Don't enable BGP. 
-            - name: CALICO_NETWORKING_BACKEND 
+            # Don't enable BGP.
+            - name: CALICO_NETWORKING_BACKEND
               value: "none"
             # Disable file logging so `kubectl logs` works.
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
-            # No IP address needed. 
+            # No IP address needed.
             - name: IP
               value: ""
+            # Set Felix endpoint to host default action to ACCEPT.
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: "ACCEPT"
           securityContext:
             privileged: true
           volumeMounts:
@@ -142,12 +145,12 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: canal-config
-                key: canal_iface 
+                key: canal_iface
           - name: FLANNELD_IP_MASQ
             valueFrom:
               configMapKeyRef:
                 name: canal-config
-                key: masquerade 
+                key: masquerade
           volumeMounts:
           - name: run
             mountPath: /run
@@ -174,4 +177,4 @@ spec:
             path: /run
         - name: flannel-cfg
           configMap:
-            name: canal-config 
+            name: canal-config
