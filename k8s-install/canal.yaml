@@ -2,7 +2,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: canal-config 
+  name: canal-config
   namespace: kube-system
 data:
   # Configure this with the location of your etcd cluster.
@@ -41,7 +41,7 @@ data:
 ---
 
 # This manifest installs the per-node agents, as well
-# as the CNI plugins and network config on 
+# as the CNI plugins and network config on
 # each master and worker node in a Kubernetes cluster.
 kind: DaemonSet
 apiVersion: extensions/v1beta1
@@ -77,18 +77,18 @@ spec:
                 configMapKeyRef:
                   name: canal-config
                   key: etcd_endpoints
-            # The interface flannel should run on. 
+            # The interface flannel should run on.
             - name: FLANNELD_IFACE
               valueFrom:
                 configMapKeyRef:
                   name: canal-config
-                  key: canal_iface 
+                  key: canal_iface
             # Perform masquerade on traffic leaving the pod cidr.
             - name: FLANNELD_IP_MASQ
               valueFrom:
                 configMapKeyRef:
                   name: canal-config
-                  key: masquerade 
+                  key: masquerade
             # Write the subnet.env file to the mounted directory.
             - name: FLANNELD_SUBNET_FILE
               value: "/run/flannel/subnet.env"
@@ -99,7 +99,7 @@ spec:
               name: resolv
             - mountPath: /run/flannel
               name: run-flannel
-        # Runs calico/node container on each Kubernetes node.  This 
+        # Runs calico/node container on each Kubernetes node.  This
         # container programs network policy and local routes on each
         # host.
         - name: calico-node
@@ -111,7 +111,7 @@ spec:
                 configMapKeyRef:
                   name: canal-config
                   key: etcd_endpoints
-            # Disable Calico BGP.  Calico is simply enforcing policy. 
+            # Disable Calico BGP.  Calico is simply enforcing policy.
             - name: CALICO_NETWORKING_BACKEND
               value: "none"
             # Disable file logging so `kubectl logs` works.
@@ -135,7 +135,7 @@ spec:
           env:
             # The name of the CNI network config file to install.
             - name: CNI_CONF_NAME
-              value: "10-canal.conf" 
+              value: "10-canal.conf"
             # The location of the etcd cluster.
             - name: ETCD_ENDPOINTS
               valueFrom:
@@ -178,34 +178,34 @@ spec:
 
 ---
 
-# This manifest deploys a Job which performs one time 
-# configuration of Canal. 
+# This manifest deploys a Job which performs one time
+# configuration of Canal.
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configure-canal 
+  name: configure-canal
   namespace: kube-system
   labels:
-    k8s-app: canal 
+    k8s-app: canal
 spec:
   template:
     metadata:
       name: configure-canal
     spec:
       hostNetwork: true
-      restartPolicy: OnFailure 
+      restartPolicy: OnFailure
       containers:
-        # Writes basic flannel configuration to etcd. 
+        # Writes basic flannel configuration to etcd.
         - name: configure-flannel
-          image: quay.io/coreos/etcd:v3.0.9 
-          command: 
+          image: quay.io/coreos/etcd:v3.0.9
+          command:
           - "etcdctl"
           - "set"
           - "/coreos.com/network/config"
           - '{ "Network": "192.168.0.0/16", "Backend": {"Type": "vxlan"} }'
           env:
             # The location of the etcd cluster.
-            - name: ETCDCTL_PEERS 
+            - name: ETCDCTL_PEERS
               valueFrom:
                 configMapKeyRef:
                   name: canal-config
@@ -249,8 +249,11 @@ spec:
             # service for API access.
             - name: K8S_API
               value: "https://kubernetes.default:443"
-            # Since we're running in the host namespace and might not have KubeDNS 
+            # Since we're running in the host namespace and might not have KubeDNS
             # access, configure the container's /etc/hosts to resolve
             # kubernetes.default to the correct service clusterIP.
             - name: CONFIGURE_ETC_HOSTS
               value: "true"
+            # Set Felix endpoint to host default action to ACCEPT.
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: "ACCEPT"

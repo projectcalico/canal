@@ -176,6 +176,9 @@ spec:
             # Disable file logging so `kubectl logs` works.
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
+            # Set Felix endpoint to host default action to ACCEPT.
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: "ACCEPT"
           securityContext:
             privileged: true
           volumeMounts:
@@ -290,7 +293,7 @@ spec:
   replicas: 1
   template:
     metadata:
-      annotations: 
+      annotations:
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
         scheduler.alpha.kubernetes.io/critical-pod: ''
       name: calico-policy-controller
