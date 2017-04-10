@@ -9,6 +9,11 @@ kubectl apply -f canal.yaml
 This directory includes two manifests for deploying canal on Kubernetes - one that requires its own etcd and one
 that doesn't.
 
+Requirements:
+- Make sure your k8s cluster is configured to provide serviceaccount tokens to pods.
+- Make sure your kubelets have been started with `--network-plugin=cni` and
+  have `--cni-conf-dir` and `--cni-bin-dir` properly set
+
 #### Using an etcd datastore 
 
 `canal.yaml`: Contains a Kubernetes DaemonSet which install and runs canal on each Kubernetes master and node.
@@ -17,7 +22,6 @@ configuring the install.
 
 Requirements:
 - Make sure you configure canal.yaml with the endpoints of your etcd cluster. 
-- Make sure your k8s cluster is configured to provide serviceaccount tokens to pods.
 
 #### Without an etcd datastore (experimental) 
 
@@ -25,7 +29,6 @@ Requirements:
 
 Requirements:
 - Make sure your controller manager has been started with `--cluster-cidr=10.244.0.0/16` and `--allocate-node-cidrs=true`.
-- Make sure your cluster is configured to provide serviceaccount tokens to pods.
 
 ## Configuration
 
