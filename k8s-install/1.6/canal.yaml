@@ -23,6 +23,7 @@ data:
         "type": "calico",
         "log_level": "info",
         "datastore_type": "kubernetes",
+        "hostname": "__KUBERNETES_NODE_NAME__",
         "ipam": {
             "type": "host-local",
             "subnet": "usePodCidr"
@@ -46,7 +47,6 @@ data:
       }
     }
 
-
 ---
 
 # This manifest installs the calico/node container, as well
@@ -69,17 +69,23 @@ spec:
         k8s-app: canal
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
-        scheduler.alpha.kubernetes.io/tolerations: |
-          [{"key": "dedicated", "value": "master", "effect": "NoSchedule" },
-           {"key":"CriticalAddonsOnly", "operator":"Exists"}]
     spec:
       hostNetwork: true
+      serviceAccountName: canal
+      tolerations:
+        # Allow the pod to run on the master.  This is required for
+        # the master to communicate with pods.
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
       containers:
         # Runs calico/node container on each Kubernetes node.  This
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: quay.io/calico/node:v1.0.1
+          image: quay.io/calico/node:v1.1.3
           env:
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
@@ -87,15 +93,27 @@ spec:
             # Enable felix logging.
             - name: FELIX_LOGSEVERITYSYS
               value: "info"
+            # Period, in seconds, at which felix re-applies all iptables state 
+            - name: FELIX_IPTABLESREFRESHINTERVAL
+              value: "60"
+            # Disable IPV6 support in Felix.
+            - name: FELIX_IPV6SUPPORT
+              value: "false"
             # Don't enable BGP.
             - name: CALICO_NETWORKING_BACKEND
               value: "none"
             # Disable file logging so `kubectl logs` works.
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
+            - name: WAIT_FOR_DATASTORE
+              value: "true"
             # No IP address needed.
             - name: IP
               value: ""
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             # Set Felix endpoint to host default action to ACCEPT.
             - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
               value: "ACCEPT"
@@ -114,7 +132,7 @@ spec:
         # This container installs the Calico CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: quay.io/calico/cni:v1.5.5
+          image: quay.io/calico/cni:v1.7.0
           command: ["/install-cni.sh"]
           env:
             # The CNI network config to install on each node.
@@ -123,6 +141,10 @@ spec:
                 configMapKeyRef:
                   name: canal-config
                   key: cni_network_config
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           volumeMounts:
             - mountPath: /host/opt/cni/bin
               name: cni-bin-dir
@@ -131,29 +153,29 @@ spec:
         # This container runs flannel using the kube-subnet-mgr backend
         # for allocating subnets.
         - name: kube-flannel
-          image: quay.io/coreos/flannel:v0.7.0
+          image: quay.io/coreos/flannel:v0.7.1
           command: [ "/opt/bin/flanneld", "--ip-masq", "--kube-subnet-mgr" ]
           securityContext:
             privileged: true
           env:
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: FLANNELD_IFACE
-            valueFrom:
-              configMapKeyRef:
-                name: canal-config
-                key: canal_iface
-          - name: FLANNELD_IP_MASQ
-            valueFrom:
-              configMapKeyRef:
-                name: canal-config
-                key: masquerade
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: FLANNELD_IFACE
+              valueFrom:
+                configMapKeyRef:
+                  name: canal-config
+                  key: canal_iface
+            - name: FLANNELD_IP_MASQ
+              valueFrom:
+                configMapKeyRef:
+                  name: canal-config
+                  key: masquerade
           volumeMounts:
           - name: run
             mountPath: /run
@@ -181,3 +203,11 @@ spec:
         - name: flannel-cfg
           configMap:
             name: canal-config
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: canal
+  namespace: kube-system

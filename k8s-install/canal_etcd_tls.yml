@@ -87,7 +87,7 @@ spec:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: |
           [{"key": "dedicated", "value": "master", "effect": "NoSchedule" },
-           {"key":"CriticalAddonsOnly", "operator":"Exists"}]
+           {"key": "CriticalAddonsOnly", "operator": "Exists"}]
       labels:
         k8s-app: canal-node
     spec:
@@ -96,7 +96,7 @@ spec:
         # Runs the flannel daemon to enable vxlan networking between
         # container hosts.
         - name: flannel
-          image: quay.io/coreos/flannel:v0.7.0
+          image: quay.io/coreos/flannel:v0.7.1
           env:
             # The location of the etcd cluster.
             - name: FLANNELD_ETCD_ENDPOINTS
@@ -168,7 +168,7 @@ spec:
         # container programs network policy and local routes on each
         # host.
         - name: calico-node
-          image: quay.io/calico/node:v1.1.0
+          image: quay.io/calico/node:v1.1.3
           env:
             # The location of the etcd cluster.
             - name: ETCD_ENDPOINTS
@@ -217,7 +217,7 @@ spec:
         # This container installs the Calico CNI binaries
         # and CNI network config file on each node.
         - name: install-calico-cni
-          image: quay.io/calico/cni:v1.5.5
+          image: quay.io/calico/cni:v1.7.0
           imagePullPolicy: Always
           command: ["/install-cni.sh"]
           env:
