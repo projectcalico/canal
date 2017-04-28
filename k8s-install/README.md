@@ -1,9 +1,17 @@
 # Kubernetes self-hosted install
 
-Installation is simple:
+Installation is simple, for Kubernetes 1.5:
 
 ```
-kubectl apply -f canal.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/canal.yaml
+```
+
+For Kubernetes 1.6:
+
+```
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/rbac.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/canal.yaml
 ```
 
 This directory includes two manifests for deploying canal on Kubernetes - one that requires its own etcd and one
@@ -23,9 +31,9 @@ configuring the install.
 Requirements:
 - Make sure you configure canal.yaml with the endpoints of your etcd cluster. 
 
-#### Without an etcd datastore (experimental) 
+#### Without an etcd datastore
 
-`canal-etcdless.yaml`: Contains a Kubernetes DaemonSet to install canal on each Kubernetes master and node.  This is an experimental mode which does not require access to an etcd cluster.
+`canal-kubernetes-datastore.yaml`: Contains a Kubernetes DaemonSet to install canal on each Kubernetes master and node.
 
 Requirements:
 - Make sure your controller manager has been started with `--cluster-cidr=10.244.0.0/16` and `--allocate-node-cidrs=true`.
@@ -36,7 +44,7 @@ Requirements:
 
 Canal uses the Kubernetes API to enforce policy, and so needs to authenticate with the Kubernetes API.  The provided
 ConfigMap [configures the Calico CNI plugin](https://github.com/projectcalico/calico-cni/blob/master/configuration.md#kubernetes-specific)
-automatically to use serviceaccount token authentication and the Kubernetes Service clusterIP. 
+automatically to use service account token authentication and the Kubernetes Service clusterIP. 
 
 ### Etcd
 

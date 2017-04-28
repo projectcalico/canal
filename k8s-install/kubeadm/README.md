@@ -27,4 +27,6 @@ node on the Kubernetes master.  Note that in a production cluster, it is recomme
 ### Requirements / Limitations
 
 * This install does not configure etcd TLS
-* This install expects that your Kubernetes master node has been labeled with `kubeadm.alpha.kubernetes.io/role: master`
+* This install expects that your Kubernetes master node has been labeled with:
+  * Kubernetes 1.5: `kubeadm.alpha.kubernetes.io/role: master`
+  * Kubernetes 1.6: `node-role.kubernetes.io/master`

@@ -162,7 +162,7 @@ spec:
         # container programs network policy and local routes on each
         # host.
         - name: calico-node
-          image: quay.io/calico/node:v1.1.0
+          image: quay.io/calico/node:v1.1.3
           env:
             # The location of the etcd cluster.
             - name: ETCD_ENDPOINTS
@@ -194,7 +194,7 @@ spec:
         # This container installs the Calico CNI binaries
         # and CNI network config file on each node.
         - name: install-calico-cni
-          image: quay.io/calico/cni:v1.6.2
+          image: quay.io/calico/cni:v1.7.0
           imagePullPolicy: Always
           command: ["/install-cni.sh"]
           env:
@@ -257,7 +257,7 @@ spec:
     metadata:
       name: configure-canal
       annotations:
-        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key": "dedicated", "operator": "Exists"}]'
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
       hostNetwork: true
@@ -297,7 +297,7 @@ spec:
   template:
     metadata:
       annotations:
-        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated", "operator":"Exists"}]'
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key": "dedicated", "operator": "Exists"}]'
         scheduler.alpha.kubernetes.io/critical-pod: ''
       name: calico-policy-controller
       namespace: kube-system
