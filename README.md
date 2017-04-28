@@ -42,7 +42,7 @@ Flannel's VXLAN provides simplicity and performance both inside of an AWS VPC an
 
 **Note:** The AWS VPC will have no ability to enforce routing policy at the Pod level, only at the node level.
 
-### Calico Linux Routing Inside a AZ and IPIP Encap Cross AZ (Q1 2017)
+### Calico Linux Routing Inside a AZ and IPIP Encap Cross AZ (Q2 2017)
 
 *This will be our default recommendation once completed.*
 
@@ -65,7 +65,4 @@ AWS VPC does have the ability to setup native routes which could be used to setu
 - [x] Step-by-step guide for users creating their own install solutions
 - [x] Kubernetes self-hosted installation support (installing Calico & flannel in a single Kubernetes pod, run as a Daemonset)
 - [x] Kubernetes self-hosted etcd-less installation support (Calico & flannel using k8s API server only, without direct etcd access)
-- [ ] Combine Calico and Flannel into single container
-- [ ] Single CNI plugin with simplified configuration
-- [ ] Mesos and DC/OS universe installation support
-- [ ] Combine Calico and Flannel daemons into single daemon
+- [ ] Calico Linux Routing Inside a AZ and IPIP Encap Cross AZ with Kubernetes Datastore
