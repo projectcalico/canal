@@ -38,15 +38,6 @@ data:
         }
     }
 
-  # Flannel network configuration.
-  net-conf.json: |
-    {
-      "Network": "10.244.0.0/16",
-      "Backend": {
-        "Type": "vxlan"
-      }
-    }
-
 ---
 
 # This manifest installs the calico/node container, as well
