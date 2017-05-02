@@ -1,6 +1,4 @@
 # This ConfigMap can be used to configure a self-hosted Canal installation.
-# See `canal.yaml` for an example of a Canal deployment which uses
-# the config in this ConfigMap.
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -8,7 +6,7 @@ metadata:
   namespace: kube-system
 data:
   # The interface used by canal for host <-> host communication.
-  # If left blank, then the interface is chosing using the node's
+  # If left blank, then the interface is chosen using the node's
   # default route.
   canal_iface: ""
 
@@ -36,6 +34,15 @@ data:
             "k8s_api_root": "https://__KUBERNETES_SERVICE_HOST__:__KUBERNETES_SERVICE_PORT__",
             "kubeconfig": "__KUBECONFIG_FILEPATH__"
         }
+    }
+
+  # Flannel network configuration. Mounted into the flannel container.
+  net-conf.json: |
+    {
+      "Network": "10.244.0.0/16",
+      "Backend": {
+        "Type": "vxlan"
+      }
     }
 
 ---
@@ -84,7 +91,7 @@ spec:
             # Enable felix logging.
             - name: FELIX_LOGSEVERITYSYS
               value: "info"
-            # Period, in seconds, at which felix re-applies all iptables state 
+            # Period, in seconds, at which felix re-applies all iptables state
             - name: FELIX_IPTABLESREFRESHINTERVAL
               value: "60"
             # Disable IPV6 support in Felix.

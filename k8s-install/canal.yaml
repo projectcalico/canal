@@ -6,7 +6,7 @@ metadata:
   namespace: kube-system
 data:
   # The interface used by canal for host <-> host communication.
-  # If left blank, then the interface is chosing using the node's
+  # If left blank, then the interface is chosen using the node's
   # default route.
   canal_iface: ""
 
@@ -34,6 +34,15 @@ data:
             "k8s_api_root": "https://__KUBERNETES_SERVICE_HOST__:__KUBERNETES_SERVICE_PORT__",
             "kubeconfig": "__KUBECONFIG_FILEPATH__"
         }
+    }
+
+  # Flannel network configuration. Mounted into the flannel container.
+  net-conf.json: |
+    {
+      "Network": "10.244.0.0/16",
+      "Backend": {
+        "Type": "vxlan"
+      }
     }
 
 ---
