@@ -124,7 +124,7 @@ spec:
         # This container installs the Calico CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: quay.io/calico/cni:v1.7.0
+          image: quay.io/calico/cni:v1.8.3
           command: ["/install-cni.sh"]
           env:
             # The CNI network config to install on each node.
