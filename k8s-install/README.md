@@ -22,6 +22,13 @@ Requirements:
   have `--cni-conf-dir` and `--cni-bin-dir` properly set
 - Make sure your controller manager has been started with `--cluster-cidr=10.244.0.0/16` and `--allocate-node-cidrs=true`.
 
+> **Note:** When using Kubernetes as the datastore the Advanced Policy
+features of Calico will not be available until
+[#458, Implement full policy model in kubernetes](https://github.com/projectcalico/calico/issues/458)
+is finished and released.  This means it is not possible to create egress
+policy for your pods, if that functionality is needed then please use etcd
+as your datastore.
+
 ### Etcd
 
 We strongly recommend using the Kubernetes API manifests above, but if you have a need to use etcd we have provided an example etcd with TLS manifest `canal_etcd_tls.yaml`.
