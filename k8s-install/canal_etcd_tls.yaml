@@ -92,6 +92,7 @@ spec:
         k8s-app: canal-node
     spec:
       hostNetwork: true
+      serviceAccountName: calico-cni-plugin
       containers:
         # Runs the flannel daemon to enable vxlan networking between
         # container hosts.
@@ -312,7 +313,10 @@ spec:
           image: quay.io/coreos/etcd:v3.1.5
           command:
           - "etcdctl"
+          - "--cert-file=/calico-secrets/etcd-cert"
+          - "--key-file=/calico-secrets/etcd-key"
           - "--ca-file=/calico-secrets/etcd-ca"
+          - "--no-sync"
           - "set"
           - "/coreos.com/network/config"
           - '{ "Network": "192.168.0.0/16", "Backend": {"Type": "vxlan"} }'
@@ -409,3 +413,41 @@ spec:
         - name: etcd-certs
           secret:
             secretName: calico-etcd-secrets
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: calico-cni-plugin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calico-cni-plugin
+subjects:
+- kind: ServiceAccount
+  name: calico-cni-plugin
+  namespace: kube-system
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: calico-cni-plugin
+  namespace: kube-system
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - nodes
+    verbs:
+      - get
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calico-cni-plugin
+  namespace: kube-system
