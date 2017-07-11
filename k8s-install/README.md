@@ -2,13 +2,13 @@
 
 This directory includes manifests for deploying canal on Kubernetes using the Kubernetes API.  
 
-Installation is simple, for Kubernetes 1.5:
+**Kubernetes 1.5**:
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/canal.yaml
 ```
 
-For Kubernetes 1.6:
+**For Kubernetes 1.6**:
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/rbac.yaml
@@ -17,10 +17,10 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8
 ```
 
 Requirements:
-- Make sure your k8s cluster is configured to provide serviceaccount tokens to pods.
-- Make sure your kubelets have been started with `--network-plugin=cni` and
+- The Kubernetes cluster must be configured to provide serviceaccount tokens to pods.
+- kubelets must be started with `--network-plugin=cni` and
   have `--cni-conf-dir` and `--cni-bin-dir` properly set
-- Make sure your controller manager has been started with `--cluster-cidr=10.244.0.0/16` and `--allocate-node-cidrs=true`.
+- The controller manager must be started with `--cluster-cidr=10.244.0.0/16` and `--allocate-node-cidrs=true`.
 
 > **Note:** When using Kubernetes as the datastore the Advanced Policy
 features of Calico will not be available until
