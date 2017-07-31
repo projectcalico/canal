@@ -66,6 +66,13 @@ rules:
       - list
       - update
       - watch
+  - apiGroups: ["alpha.projectcalico.org"]
+    resources:
+      - systemnetworkpolicies
+    verbs:
+      - get
+      - list
+      - watch
 
 ---
 
