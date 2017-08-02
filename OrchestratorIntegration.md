@@ -19,15 +19,9 @@ Flannel can run as a native binary or from inside a container.
 When Flannel is being used to provide connectivity, then Calico should not be used for IPAM. Flannel requires IP addresses to be allocated only from a range assigned to that host and Calico IPAM doesn't currently support this mode. 
 
 ## Calico
-If Calico is being used for networking then "Canal" is precisely the same as "Calico". Full instructions for setting up Calico networking can be found in the Calico [documentation](https://github.com/projectcalico/calico-containers/blob/master/README.md)
+If Calico is being used for networking then "Canal" is precisely the same as "Calico". Full instructions for setting up Calico networking can be found in the Calico [documentation](http://docs.projectcalico.org/latest/getting-started/kubernetes/installation/integration)
 
-Briefly, it involves
-* Running a BGP daemon (bird) on each host
-* Storing configuration for the BGP daemon in the etcd datastore.
-* Running Confd as a glue layer to translate the etcd data into valid bird configuration.
-
-This functionality is packaged into the `calico/node` container image. An example of running it under rkt can be found in the [coreos-kubernetes](https://github.com/coreos/coreos-kubernetes/blob/master/Documentation/deploy-master.md#set-up-calico-node-container-optional) repository.
-The configuration can be written to etcd using the [`calicoctl`](https://github.com/projectcalico/calico-containers/tree/v0.22.0/docs/calicoctl.md) CLI tool, one of the Calico client libraries or it can be written to [etcd directly](https://github.com/projectcalico/calico-containers/blob/v0.22.0/docs/etcdStructure.md)
+The configuration can be written to etcd using the [`calicoctl`](http://docs.projectcalico.org/latest/reference/calicoctl/) CLI tool or one of the Calico client libraries.
  
 ### IPAM
 When Calico is being used to provide connectivity, then Calico should be used for IPAM. Using Calico for IPAM ensures that addresses are allocated in such a way to improve aggregation for BGP. 
