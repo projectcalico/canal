@@ -82,7 +82,7 @@ Environment=ETCD_ENDPOINTS=${ETCD_ENDPOINTS}
 ExecStart=/usr/bin/rkt run --inherit-env --stage1-name=coreos.com/rkt/stage1-fly \
 --volume=modules,kind=host,source=/lib/modules,readOnly=false \
 --mount=volume=modules,target=/lib/modules \
---trust-keys-from-https quay.io/calico/node:v0.22.0
+--trust-keys-from-https quay.io/calico/node:v2.4.0
 
 KillMode=mixed
 Restart=always
@@ -102,7 +102,7 @@ Download the Calico CNI plugin from the [releases](https://github.com/projectcal
 When using rkt, download the CNI plugin to `/etc/rkt/net.d`
 
 ````
-wget -O /etc/rkt/net.d/calico https://github.com/projectcalico/calico-cni/releases/download/v1.4.1/calico
+wget -O /etc/rkt/net.d/calico https://github.com/projectcalico/calico-cni/releases/download/v1.10.0/calico
 chmod +x /etc/rkt/net.d/calico
 ````
 
