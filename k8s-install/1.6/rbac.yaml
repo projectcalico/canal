@@ -1,8 +1,9 @@
 # Calico Roles
+# Pulled from https://docs.projectcalico.org/v2.4/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: canal
+  name: calico
   namespace: kube-system
 rules:
   - apiGroups: [""]
@@ -110,10 +111,11 @@ rules:
       - patch
 ---
 
+# Bind the flannel ClusterRole to the canal ServiceAccount.
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: flannel
+  name: canal-flannel
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -125,14 +127,15 @@ subjects:
 
 ---
 
+# Bind the calico ClusterRole to the canal ServiceAccount.
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: canal
+  name: canal-calico
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: canal
+  name: calico
 subjects:
 - kind: ServiceAccount
   name: canal
