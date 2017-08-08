@@ -21,7 +21,7 @@ data:
         "type": "calico",
         "log_level": "info",
         "datastore_type": "kubernetes",
-        "hostname": "__KUBERNETES_NODE_NAME__",
+        "nodename": "__KUBERNETES_NODE_NAME__",
         "ipam": {
             "type": "host-local",
             "subnet": "usePodCidr"
@@ -111,7 +111,7 @@ spec:
             # No IP address needed.
             - name: IP
               value: ""
-            - name: HOSTNAME
+            - name: NODENAME
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
