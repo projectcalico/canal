@@ -1,11 +1,11 @@
 # Canal Phase 1
-Canal Phase 1 uses Calico to provide network policy and Flannel to provide networking between hosts. 
+Canal Phase 1 uses Calico to provide network policy and Flannel to provide networking between hosts.
 
 This guide describes the parts needed to get Canal working with rkt. To try out a packaged version of this guide for Kubernetes then see the [coreos/coreos-kubernetes](https://github.com/coreos/coreos-kubernetes) repository
 
 # flannel
 flannel provides inter-host connectivity and any of the flannel networking backends can be used with Canal. The recommended choice for most deployments is `vxlan` but `host-gw` might make sense for some small clusters which are on their own L2 network.
- 
+
 ## Configuring the cluster
 Before running the flannel daemon, some global configuration needs to be written to etcd.
 ```
@@ -14,7 +14,7 @@ etcdctl set /coreos.com/network/config '{ "Network": "10.100.0.0/16", "Backend":
 
 * Each host will be assigned a range of IP addresses from the network (by default a `/24`).
 * Further details on the configuration can be found in the [flannel documentation](https://github.com/coreos/flannel/blob/master/README.md#configuration)
- 
+
 ## Running the flannel daemon
 Each host in the cluster needs to run the flannel daemon. If etcd is available on `localhost` then flannel doesn't need to be passed any options but typically flannel will at least need to be told how to access etcd.
 
@@ -47,7 +47,7 @@ ExecStart=/usr/local/bin/rkt run --net=host \
    ${FLANNEL_IMG}:${FLANNEL_VER} \
    --exec /opt/bin/flanneld \
    -- -etcd-endpoints ${ETCD_ENDPOINTS} -public-ip ${ADVERTISE_IP}
-   
+
 [Install]
 WantedBy=multi-user.target
 ```
@@ -57,10 +57,10 @@ WantedBy=multi-user.target
 # Running Calico on Each Host
 There are two parts to using Calico to provide networking policy.
 * running the `calico/node` container image on each host in your cluster.
-* putting the `calico` CNI plugin on each host in your cluster. 
+* putting the `calico` CNI plugin on each host in your cluster.
 
 ## Calico Node
-The `calico/node` container can be run using Docker or rkt. Here is an example of running it using rkt under systemd. 
+The `calico/node` container can be run using Docker or rkt. Here is an example of running it using rkt under systemd.
 
 
 /etc/systemd/system/calico-node.service
@@ -73,7 +73,7 @@ After=network-online.target
 [Service]
 Slice=machine.slice
 Environment=CALICO_DISABLE_FILE_LOGGING=true
-Environment=HOSTNAME=${ADVERTISE_IP}
+Environment=NODENAME=${ADVERTISE_IP}
 Environment=IP=${ADVERTISE_IP}
 Environment=FELIX_FELIXHOSTNAME=${ADVERTISE_IP}
 Environment=CALICO_NETWORKING=false
@@ -98,7 +98,7 @@ WantedBy=multi-user.target
 The [Calico CNI plugin](https://github.com/projectcalico/calico-cni) is used to store information about each container that's created. This provides the `calico/node` container with the information it needs to enforce network policy.
 
 Download the Calico CNI plugin from the [releases](https://github.com/projectcalico/calico-cni/releases) page.
- 
+
 When using rkt, download the CNI plugin to `/etc/rkt/net.d`
 
 ````
@@ -118,7 +118,7 @@ When using rkt, the file should be placed in `/etc/rkt/net.d`. rkt comes with th
     "delegate": {
         "type": "calico",
         "etcd_endpoints": "${ETCD_ENDPOINTS}",
-        "hostname": "${ADVERTISE_IP}"
+        "nodename": "${ADVERTISE_IP}"
     }
 }
 ```
