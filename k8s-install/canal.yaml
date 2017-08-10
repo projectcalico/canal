@@ -77,7 +77,7 @@ spec:
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: quay.io/calico/node:v2.4.0
+          image: quay.io/calico/node:v2.4.1
           env:
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
