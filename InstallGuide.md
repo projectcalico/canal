@@ -82,7 +82,7 @@ Environment=ETCD_ENDPOINTS=${ETCD_ENDPOINTS}
 ExecStart=/usr/bin/rkt run --inherit-env --stage1-name=coreos.com/rkt/stage1-fly \
 --volume=modules,kind=host,source=/lib/modules,readOnly=false \
 --mount=volume=modules,target=/lib/modules \
---trust-keys-from-https quay.io/calico/node:v2.4.0
+--trust-keys-from-https quay.io/calico/node:v2.4.1
 
 KillMode=mixed
 Restart=always

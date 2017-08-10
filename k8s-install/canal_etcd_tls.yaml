@@ -169,7 +169,7 @@ spec:
         # container programs network policy and local routes on each
         # host.
         - name: calico-node
-          image: quay.io/calico/node:v2.4.0
+          image: quay.io/calico/node:v2.4.1
           env:
             # The location of the etcd cluster.
             - name: ETCD_ENDPOINTS
