@@ -2,13 +2,22 @@
 
 This directory includes manifests for deploying canal on Kubernetes using the Kubernetes API.  
 
-**Kubernetes 1.5**:
+#### For Kubernetes 1.7
+
+> **Note:** If you are upgrading from the Kubernetes 
+[1.6](#for-kubernetes-16) or [1.5](#for-kubernetes-15) manifests to the
+[1.7](#for-kubernetes-17) manifest it is neccessary to
+[migrate your Calico configuration data](https://github.com/projectcalico/calico/blob/master/upgrade/v2.5/README.md)
+before upgrading. Otherwise, your cluster may lose connectivity after the
+upgrade.
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/canal.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/rbac.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/canal.yaml
 ```
 
-**For Kubernetes 1.6**:
+#### For Kubernetes 1.6
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/rbac.yaml
@@ -16,7 +25,13 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/canal.yaml
 ```
 
-Requirements:
+#### Kubernetes 1.5
+
+```
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/canal.yaml
+```
+
+### Requirements
 - The Kubernetes cluster must be configured to provide serviceaccount tokens to pods.
 - kubelets must be started with `--network-plugin=cni` and
   have `--cni-conf-dir` and `--cni-bin-dir` properly set
