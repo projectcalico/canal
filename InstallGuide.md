@@ -18,7 +18,7 @@ etcdctl set /coreos.com/network/config '{ "Network": "10.100.0.0/16", "Backend":
 ## Running the flannel daemon
 Each host in the cluster needs to run the flannel daemon. If etcd is available on `localhost` then flannel doesn't need to be passed any options but typically flannel will at least need to be told how to access etcd.
 
-flannel can be run either as a [binary](https://github.com/coreos/flannel/releases/download/v0.6.1/flanneld-amd64) or in a [container](https://quay.io/repository/coreos/flannel?tab=tags)
+flannel can be run either as a [binary](https://github.com/coreos/flannel/releases/download/v0.9.1/flanneld-amd64) or in a [container](https://quay.io/repository/coreos/flannel?tab=tags)
 
 Some key command line options are [documented](https://github.com/coreos/flannel/blob/master/README.md#key-command-line-options)
 
@@ -33,7 +33,7 @@ Documentation=https://github.com/coreos/flannel
 Restart=always
 RestartSec=5
 Environment="TMPDIR=/var/tmp/"
-Environment="FLANNEL_VER=v0.6.1"
+Environment="FLANNEL_VER=v0.9.1"
 Environment="FLANNEL_IMG=quay.io/coreos/flannel"
 LimitNOFILE=40000
 LimitNPROC=1048576
