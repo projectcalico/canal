@@ -2,7 +2,7 @@
 
 This directory includes manifests for deploying canal on Kubernetes using the Kubernetes API.  
 
-#### For Kubernetes 1.7
+#### For Kubernetes 1.7, 1.8, and 1.9
 
 > **Note:** If you are upgrading from the Kubernetes 
 [1.6](#for-kubernetes-16) or [1.5](#for-kubernetes-15) manifests to the
