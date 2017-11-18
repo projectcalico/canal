@@ -35,13 +35,11 @@ This will walk through the pros/cons and recommendations.
 
 *This is our default recommendation for Canal users today.*
 
-Flannel's VXLAN provides simplicity and performance both inside of an AWS VPC and across VPCs. And with the recently merged support to deploy flannel simply using [kubectl](https://github.com/coreos/flannel/issues/587) it is easy to get started as well. For users this is a reasonable default recommended by teams from both CoreOS and Tigera.
+Flannel's VXLAN provides simplicity and performance both inside of an AWS VPC and across VPCs. And with support to deploy simply using kubectl it is easy to get started as well. For most users this is a reasonable default recommended by teams from both CoreOS and Tigera.
 
 **Note:** The AWS VPC will have no ability to enforce routing policy at the Pod level, only at the node level.
 
-### Calico Linux Routing Inside a AZ and IPIP Encap Cross AZ (Q2 2017)
-
-*This will be our default recommendation once completed.*
+### Calico Linux Routing Inside a AZ and IPIP Encap Cross AZ
 
 Because Amazon VPCs are L2 networks Calico can use native Linux routing between hosts in a VPC AZ / subnet. This means that packets flow between hosts using the normal Linux routing logic.
 
