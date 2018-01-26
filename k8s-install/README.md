@@ -1,3 +1,7 @@
+# Up to date installation directions and manifests can be found in the [Calico docs](https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/canal)
+
+This repo is deprecated and no further updates are expected here.
+
 # Kubernetes self-hosted install
 
 This directory includes manifests for deploying canal on Kubernetes using the Kubernetes API.  

@@ -1,3 +1,6 @@
+# Up to date installation directions and manifests can be found in the [Calico docs](https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/canal)
+
+This repo is deprecated and no further updates are expected here.
 
 ![Canal Logo](https://github.com/projectcalico/canal/raw/master/logos/canal-logo-type-full-color%20328x184.png)
 
