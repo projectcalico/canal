@@ -1,3 +1,7 @@
+# Up to date installation directions and manifests can be found in the [Calico docs](https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/canal)
+
+This repo is deprecated and no further updates are expected here.
+
 This document discusses the decisions that must be made when integrating Canal with a new orchestrator. It is intended for advanced users that are planning to do significant integration work.
 
 Canal provides two things

@@ -1,3 +1,7 @@
+# Up to date installation directions and manifests can be found in the [Calico docs](https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/canal)
+
+This repo is deprecated and no further updates are expected here.
+
 # Canal Phase 1
 Canal Phase 1 uses Calico to provide network policy and Flannel to provide networking between hosts.
 
