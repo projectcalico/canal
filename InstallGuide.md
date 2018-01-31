@@ -1,5 +1,7 @@
-# Up to date installation directions and manifests can be found in the [Calico docs](https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/canal)
+# [Canal manifests and docs](https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/canal) have moved to [docs.projectcalico.org](https://docs.projectcalico.org/)
 
+Refer to [Canal/flannel Hosted Install](https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/canal)
+for up to date installation directions and manifests.
 This repo is deprecated and no further updates are expected here.
 
 # Canal Phase 1
